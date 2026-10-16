@@ -37,7 +37,13 @@ public interface TStudentAttendanceMapper {
 	 */
 	TStudentAttendance findByLmsUserIdAndTrainingDate(@Param("lmsUserId") Integer lmsUserId,
 			@Param("trainingDate") Date trainingDate, @Param("deleteFlg") Short deleteFlg);
-
+	
+	//task.25 今日の日付を取得して、過去日にて未入力あるかのチェック)
+	Integer notEnterCount();
+	
+//	Integer notEnterCount(@Param("lmsUserId") Integer lmsUserId,
+//			@Param("trainingDate") Date trainingDate, @Param("deleteFlg") Short deleteFlg);
+	
 	/**
 	 * 勤怠管理画面用DTOリスト取得
 	 * 
@@ -64,5 +70,7 @@ public interface TStudentAttendanceMapper {
 	 * @return 更新結果
 	 */
 	Boolean update(TStudentAttendance tStudentAttendance);
+	
+	
 
 }

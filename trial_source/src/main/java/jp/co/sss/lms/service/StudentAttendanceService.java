@@ -68,10 +68,37 @@ public class StudentAttendanceService {
 			if (statusEnum != null) {
 				dto.setStatusDispName(statusEnum.name);
 			}
+			
 		}
 
 		return attendanceManagementDtoList;
 	}
+	
+	//task.25 過去日の未入力チェック
+//	public boolean notEnterCheck() throws ParseException {
+		//本日の日付
+//		LocalDate today = LocalDate.now();
+		//tStudentAttendanceMapper.notEnterCount を呼び出し、未入力件数を取得する。
+//		tStudentAttendanceMapper.notEnterCount();
+		//上記カウントにてcount1以上（未入力）がある場合true、そうでない場合false
+//			if () {
+//				return true;
+//			}
+		
+//		return false;
+	
+		//参考のやつ
+		//生成（本日の日付）
+		//LocalDate today = LocalDate.now();
+		
+		//拡張forで一つずつlistから取得
+		//for (BookLendingDTO3_2 book : list) {
+			//statusが"LENT" and 返却日（DueDate）がnullでない場合
+		//	if ("LENT".equals(book.getStatus()) && book.getDueDate() != null) {
+				//返却日が期限超過している場合
+		//		if(book.getDueDate().isBefore(today)) {
+		//			book.setOverdue(true);
+//	}
 
 	/**
 	 * 出退勤更新前のチェック

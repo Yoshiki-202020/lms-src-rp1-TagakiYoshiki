@@ -18,6 +18,16 @@
 			AND training_date = #{trainingDate} 
 			AND delete_flg = #{deleteFlg}
 	</select>
+	
+<!--	<select id="notEnterCount" resultType="jp.co.sss.lms.entity.TStudentAttendance">-->
+<!--		SELECT * -->
+<!--		FROM t_student_attendance-->
+<!--		WHERE lms_user_id = #{lmsUserId}-->
+<!--			AND delete_flg = 0-->
+<!--			AND training_date < CURRENT_DATE-->
+<!--			AND status != 1 -->
+<!--			AND (training_start_time IS NULL OR training_end_time IS NULL)-->
+<!--	</select>-->
 
 	<select id="getAttendanceManagement" resultType="jp.co.sss.lms.dto.AttendanceManagementDto">
 		SELECT
