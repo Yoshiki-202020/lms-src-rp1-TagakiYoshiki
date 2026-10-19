@@ -74,18 +74,29 @@ public class StudentAttendanceService {
 		return attendanceManagementDtoList;
 	}
 	
-	//task.25 過去日の未入力チェック
-//	public boolean notEnterCheck() throws ParseException {
-		//本日の日付
-//		LocalDate today = LocalDate.now();
-		//tStudentAttendanceMapper.notEnterCount を呼び出し、未入力件数を取得する。
-//		tStudentAttendanceMapper.notEnterCount();
-		//上記カウントにてcount1以上（未入力）がある場合true、そうでない場合false
-//			if () {
-//				return true;
-//			}
+//	Task.25 過去日の未入力チェック
+//
+//	# 概要 今日より前の過去日に、未入力の勤怠があるかどうかを判定する。
+//
+//	# 処理 
+//	 * 今日の日付を取得する。
+//
+//	 *tStudentAttendanceMapper.notEnterCount を呼び出し、未入力件数を取得する。
+//
+//	 *件数が 0 より大きければ true、そうでなければ false を戻す。
+//   ----------------------------------
+//	task.25 過去日の未入力チェック
+	public boolean notEnterCheck() throws ParseException {
+		//SimpleDateFormatクラスでフォーマットパターンを設定する
+		//現在日付を取得
+		Date trainingDate = attendanceUtil.getTrainingDate();
+		int tStudentAttendance = tStudentAttendanceMapper.notEnterCount(loginUserDto.getLmsUserId(), trainingDate, Constants.DB_FLG_FALSE);
+			if (tStudentAttendance > 0) {
+					return true;
+				}return false;
+	}
+	
 		
-//		return false;
 	
 		//参考のやつ
 		//生成（本日の日付）

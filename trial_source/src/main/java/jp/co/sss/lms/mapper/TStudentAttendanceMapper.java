@@ -39,10 +39,9 @@ public interface TStudentAttendanceMapper {
 			@Param("trainingDate") Date trainingDate, @Param("deleteFlg") Short deleteFlg);
 	
 	//task.25 今日の日付を取得して、過去日にて未入力あるかのチェック)
-	Integer notEnterCount();
-	
-//	Integer notEnterCount(@Param("lmsUserId") Integer lmsUserId,
-//			@Param("trainingDate") Date trainingDate, @Param("deleteFlg") Short deleteFlg);
+	Integer notEnterCount(@Param("lmsUserId") Integer lmsUserId,
+			@Param("trainingDate") Date trainingDate, @Param("deleteFlg") Short deleteFlg);
+	//「lmsUserId」、「trainingDate」、「deleteFlg」を渡し、この条件に合うデータが何件あるか数える定義（Count）
 	
 	/**
 	 * 勤怠管理画面用DTOリスト取得

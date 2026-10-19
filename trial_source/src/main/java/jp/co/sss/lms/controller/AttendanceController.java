@@ -13,24 +13,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
-import jp.co.sss.lms.mapper.TStudentAttendanceMapper;
 import jp.co.sss.lms.service.StudentAttendanceService;
 import jp.co.sss.lms.util.Constants;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 勤怠管理コントローラ
  * 
  * @author 東京ITスクール
  */
-@Slf4j
 @Controller
 @RequestMapping("/attendance")
 public class AttendanceController {
-	
-	//後ほど消す
-	@Autowired
-	private TStudentAttendanceMapper tStudentAttendanceMapper;
 
 	@Autowired
 	private StudentAttendanceService studentAttendanceService;
@@ -47,25 +40,26 @@ public class AttendanceController {
 	 * @throws ParseException
 	 */
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
-	public String index(Model model) {
+	//throws ParseExceptionの追加
+	public String index(Model model) throws ParseException {
 
 		// 勤怠一覧の取得
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
 
-		Integer test = tStudentAttendanceMapper.notEnterCount();
-		System.out.println(test);
+//		Integer test = tStudentAttendanceMapper.notEnterCount();
+//		System.out.println(test);
 		
 		//task.25 過去日未入力チェック
 		//notEnterCheck 結果がtrueかfalseかを受け取る
-//		boolean hasNotEnter = false;
-//			if (studentAttendanceService.notEnterCheck() == true) {
-//				hasNotEnter = true;
-//			}
+		boolean hasNotEnter = false;
+			if (studentAttendanceService.notEnterCheck() == true) {
+				hasNotEnter = true;
+			}
 
 		//detail.htmlへ属性付けるもの
-//		model.addAttribute("hasNotEnter", hasNotEnter);
+		model.addAttribute("hasNotEnter", hasNotEnter);
 
 		return "attendance/detail";
 	}

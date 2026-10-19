@@ -86,12 +86,19 @@
 			const minutes = ('0' + today.getMinutes()).slice(-2);
 			return hours + ':' + minutes;
 		}
+		</script>
+		<script th:inline="javascript">
+		// task.25 過去日の未入力があった場合、ダイアログを表示
+		const hasNotEnter = false;
 		
-		// 3. 過去日の未入力があった場合、ダイアログを表示
-        //    if (hasNotEnter == true) {
-        //        alert("過去日の勤怠に未入力があります");
-        //    }
-	</script>
+		window.addEventListener("DOMContentLoaded", function() {
+			//hasNotEnterがtrueの場合にアラートでる
+			            if (hasNotEnter) {
+                alert("過去日の勤怠に未入力があります");
+            }
+		})
+		</script>
+	
 
 </body>
 </html>
