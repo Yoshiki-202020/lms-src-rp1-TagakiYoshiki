@@ -48,17 +48,15 @@ public class AttendanceController {
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
 
-//		Integer test = tStudentAttendanceMapper.notEnterCount();
-//		System.out.println(test);
-		
-		//task.25 過去日未入力チェック
+		//田垣貴生 - task.25 過去日未入力チェック
 		//notEnterCheck 結果がtrueかfalseかを受け取る
 		boolean hasNotEnter = false;
-			if (studentAttendanceService.notEnterCheck() == true) {
-				hasNotEnter = true;
-			}
+		//ServiceクラスのnotEnterCheckから受け取った値がtrueの場合
+		if (studentAttendanceService.notEnterCheck() == true) {
+			hasNotEnter = true;
+		}
 
-		//detail.htmlへ属性付けるもの
+		//detail.htmlへ属性付ける
 		model.addAttribute("hasNotEnter", hasNotEnter);
 
 		return "attendance/detail";

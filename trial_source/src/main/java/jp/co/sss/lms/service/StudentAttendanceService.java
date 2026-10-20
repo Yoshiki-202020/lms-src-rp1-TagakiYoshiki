@@ -68,48 +68,26 @@ public class StudentAttendanceService {
 			if (statusEnum != null) {
 				dto.setStatusDispName(statusEnum.name);
 			}
-			
+
 		}
 
 		return attendanceManagementDtoList;
 	}
-	
-//	Task.25 過去日の未入力チェック
-//
-//	# 概要 今日より前の過去日に、未入力の勤怠があるかどうかを判定する。
-//
-//	# 処理 
-//	 * 今日の日付を取得する。
-//
-//	 *tStudentAttendanceMapper.notEnterCount を呼び出し、未入力件数を取得する。
-//
-//	 *件数が 0 より大きければ true、そうでなければ false を戻す。
-//   ----------------------------------
-//	task.25 過去日の未入力チェック
+
+	//田垣貴生 - task.25 過去日未入力チェック
 	public boolean notEnterCheck() throws ParseException {
 		//SimpleDateFormatクラスでフォーマットパターンを設定する
 		//現在日付を取得
+		//attendanceUtil.getTrainingDataにてすでに現在日付を取得する定義はされているため以下取得もののみ
 		Date trainingDate = attendanceUtil.getTrainingDate();
-		int tStudentAttendance = tStudentAttendanceMapper.notEnterCount(loginUserDto.getLmsUserId(), trainingDate, Constants.DB_FLG_FALSE);
-			if (tStudentAttendance > 0) {
-					return true;
-				}return false;
+		int tStudentAttendance = tStudentAttendanceMapper.notEnterCount(loginUserDto.getLmsUserId(), trainingDate,
+				Constants.DB_FLG_FALSE);
+		//tStudentAttendanceにて件数が1件でもある場合（過去勤怠未入力）
+		if (tStudentAttendance > 0) {
+			return true;
+		}
+		return false;
 	}
-	
-		
-	
-		//参考のやつ
-		//生成（本日の日付）
-		//LocalDate today = LocalDate.now();
-		
-		//拡張forで一つずつlistから取得
-		//for (BookLendingDTO3_2 book : list) {
-			//statusが"LENT" and 返却日（DueDate）がnullでない場合
-		//	if ("LENT".equals(book.getStatus()) && book.getDueDate() != null) {
-				//返却日が期限超過している場合
-		//		if(book.getDueDate().isBefore(today)) {
-		//			book.setOverdue(true);
-//	}
 
 	/**
 	 * 出退勤更新前のチェック
