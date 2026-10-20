@@ -89,7 +89,7 @@
 		</script>
 		<script th:inline="javascript">
 		// task.25 過去日の未入力があった場合、ダイアログを表示
-		const hasNotEnter = false;
+		const hasNotEnter = /*[[${hasNotEnter}]]*/  false;
 		
 		window.addEventListener("DOMContentLoaded", function() {
 			//hasNotEnterがtrueの場合にアラートでる
