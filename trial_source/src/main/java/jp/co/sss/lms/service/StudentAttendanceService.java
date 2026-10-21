@@ -272,6 +272,56 @@ public class StudentAttendanceService {
 
 		return attendanceForm;
 	}
+//	
+//	Task.26 入力された出退勤の{時間}{分}をhh:mm形式に変換し、AttendanceFormにセットする
+//
+//	# 概要 フォーム内の「時」と「分」の入力を、「hh:mm」形式の文字列に変換してセットする。
+//
+//	# 処理 
+//	[loop] DailyAttendanceForm : フォーム内のリスト 
+//	    * [if 出勤の「時」「分」が共に入力されている場合] %02d:%02d 形式で trainingStartTime にセットする。 
+//	    * [if 退勤の「時」「分」が共に入力されている場合] %02d:%02d 形式で trainingEndTime にセットする。
+//	[loop end]
+	
+	//田垣貴生 - task.26 勤怠管理直接変更画面_セレクトボックス用のhh:mm形式変換、AttendanceFormにセットする
+	public void formatConversion(AttendanceForm attendanceForm) {
+		//Loop用DailyAttendanceForm : フォーム内のリスト
+		for (DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
+			Integer startHour = attendanceUtil.getHour(dailyAttendanceForm.getTrainingStartTime());
+			Integer startMinute = attendanceUtil.getMinute(dailyAttendanceForm.getTrainingStartTime());
+			Integer endHour = attendanceUtil.getHour(dailyAttendanceForm.getTrainingEndTime());
+			Integer endMinute = attendanceUtil.getMinute(dailyAttendanceForm.getTrainingEndTime());
+			
+			//if 出勤の「時」「分」が共に入力されている場合→%02d:%02d形式でtrainingStartTimeにセット
+			if (startHour == null && startMinute == null) {
+				
+				String formatStartTime = String.format("%02d:%02d", startHour, startMinute);
+				
+				dailyAttendanceForm.setTrainingStartTime(formatStartTime);
+				
+			} else {
+				//条件以外は空欄（NULL）をtrainingStartTimeにセット
+				dailyAttendanceForm.setTrainingStartTime(null);
+				
+			}
+			
+			//if 退勤の「時」「分」が共に入力されている場合→%02d:%02d形式でtrainingEndTimeにセット
+			if (endHour == null && endMinute == null) {
+				
+				String formatEndTime = String.format("%02d:%02d", endHour, endMinute);
+				
+				dailyAttendanceForm.setTrainingEndTime(formatEndTime);
+			
+			} else {
+				
+				//条件以外は空欄（NULL）をtrainingEndTimeにセット
+				dailyAttendanceForm.setTrainingEndTime(null);
+				
+			}
+			
+		}
+	}
+	
 
 	/**
 	 * 勤怠登録・更新処理
