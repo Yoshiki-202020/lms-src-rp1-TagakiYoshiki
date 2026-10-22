@@ -38,7 +38,15 @@ public interface TStudentAttendanceMapper {
 	TStudentAttendance findByLmsUserIdAndTrainingDate(@Param("lmsUserId") Integer lmsUserId,
 			@Param("trainingDate") Date trainingDate, @Param("deleteFlg") Short deleteFlg);
 
-	//田垣貴生 - task.25 過去日未入力チェック （今日の日付を取得して、過去日にて未入力あるかのチェック)
+
+	/**
+	 * 過去日未入力チェック （今日の日付を取得して、過去日にて未入力あるかのチェック)
+	 * @author 田垣貴生 - task.25
+	 * @param lmsUserId
+	 * @param trainingDate
+	 * @param deleteFlg
+	 * @return
+	 */
 	Integer notEnterCount(@Param("lmsUserId") Integer lmsUserId,
 			@Param("trainingDate") Date trainingDate, @Param("deleteFlg") Short deleteFlg);
 

@@ -50,11 +50,13 @@ public class AttendanceController {
 
 		//田垣貴生 - task.25 過去日未入力チェック
 		//notEnterCheck 結果がtrueかfalseかを受け取る
-		boolean hasNotEnter = false;
-		//ServiceクラスのnotEnterCheckから受け取った値がtrueの場合
-		if (studentAttendanceService.notEnterCheck() == true) {
-			hasNotEnter = true;
-		}
+//		boolean hasNotEnter = false;
+//		//ServiceクラスのnotEnterCheckから受け取った値がtrueの場合
+//		if (studentAttendanceService.notEnterCheck()) {
+//			hasNotEnter = true;
+//		}
+		//中間レポート後にて修正した箇所
+		boolean hasNotEnter = studentAttendanceService.notEnterCheck();
 
 		//detail.htmlへ属性付ける
 		model.addAttribute("hasNotEnter", hasNotEnter);
