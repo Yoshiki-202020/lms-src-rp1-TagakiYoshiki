@@ -132,33 +132,42 @@ public class AttendanceUtil {
 		return map;
 	}
 	
-	//Task.26 時間のプルダウンマップを生成
+	/**
+	 * 時間のプルダウンマップを生成
+	 * @author 田垣貴生 - Task.26
+	 * @return
+	 */
 	public LinkedHashMap<Integer, String> getHourMap() {
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
 		map.put(null, "");
-		for (int i = 0; i <= 23;) {
+		for (int i = 0; i<24; i++) {
 			map.put(i, String.format("%02d", i));
-
-			i = i + 1;
 
 		}
 		return map;
 	}
 	
-	//Task.26 分のプルダウンマップを生成
+	/**
+	 * 分のプルダウンマップを生成
+	 * @author 田垣貴生 - Task.26
+	 * @return
+	 */
 	public LinkedHashMap<Integer, String> getMinuteMap() {
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
 		map.put(null, "");
-		for (int i = 0; i < 60;) {
+		for (int i = 0; i < 60; i++) {
 			map.put(i, String.format("%02d", i));
-
-			i = i + 1;
 
 		}
 		return map;
 	}
 	
-	//Task.26 時間（時）の切り出し
+	/**
+	 * 時間（時）の切り出し
+	 * @author 田垣貴生 - Task.26
+	 * @param hour
+	 * @return
+	 */
 	public Integer getHour(String hour) {
 		String strHour = hour.substring(0, 2);
 		
@@ -166,7 +175,12 @@ public class AttendanceUtil {
 	}
 	
 	
-	//Task.26 時間（分）の切り出し
+	/**
+	 * 時間（分）の切り出し
+	 * @author 田垣貴生 - Task.26
+	 * @param minute
+	 * @return
+	 */
 	public Integer getMinute(String minute) {
 		String strMinute = minute.substring(3, 5);
 		

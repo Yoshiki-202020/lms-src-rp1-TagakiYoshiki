@@ -130,7 +130,7 @@ public class AttendanceController {
 		AttendanceForm attendanceForm = studentAttendanceService
 				.setAttendanceForm(attendanceManagementDtoList);
 		model.addAttribute("attendanceForm", attendanceForm);
-
+		System.out.println("配列確認" + attendanceForm);
 		return "attendance/update";
 	}
 
