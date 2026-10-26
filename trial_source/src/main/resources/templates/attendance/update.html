@@ -17,6 +17,9 @@
 			<h2><small>途中退校日：${dispLeaveDate}</small></h2>
 		</th:block>
 	</th:block>
+	
+<!--	<input type="text" th:field="*{}"-->
+<!--		th:error-->
 
 	<div class="row">
 		<div class="bs-component col-sm-12">
@@ -97,7 +100,9 @@
 					<th:block th:if="${session.loginUserDto.role != '0001'}">
 						<input type="submit" value="戻る" name="indexCompany" class="btn btn-default" />
 					</th:block>
-					<input type="submit" value="更新" name="complete" class="btn btn-info" />
+					<!--Task.27「更新」ボタン押下時に確認画面を出すのでcomfirmを使用-->
+					<!--return使用でキャンセルまたはOKを押すことでreturn falseまたはtrueを返している-->
+					<input type="submit" value="更新" name="complete" class="btn btn-info" onclick="return confirm('更新します。よろしいでしょうか？');"/>
 				</div>
 
 			</form>

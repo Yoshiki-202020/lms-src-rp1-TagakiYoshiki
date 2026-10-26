@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
@@ -349,6 +350,20 @@ public class StudentAttendanceService {
 		}
 	}
 	
+	
+	/**
+	 * Task.27 勤怠情報直接変更画面 入力チェック
+	 * @author 田垣貴生
+	 * @param attendanceForm
+	 * @param result
+	 */
+	public void updateInputCheck(AttendanceForm attendanceForm, BindingResult result) {
+			if (result.hasErrors()) {
+				attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+				attendanceForm.setAttendanceHour(attendanceUtil.getHourMap());
+				attendanceForm.setAttendanceMinute(attendanceUtil.getMinuteMap());
+			}
+		}
 
 	/**
 	 * 勤怠登録・更新処理
