@@ -358,7 +358,53 @@ public class StudentAttendanceService {
 	 * @param result
 	 */
 	public void updateInputCheck(AttendanceForm attendanceForm, BindingResult result) {
-			if (result.hasErrors()) {
+		
+		List<DailyAttendanceForm> attendanceList = attendanceForm.getAttendanceList();
+		
+		if (attendanceList != null) {
+			for (int i = 0; i < attendanceList.size(); i++) {
+				DailyAttendanceForm dailyAttendanceForm = attendanceList.get(i);
+				
+				Integer startHour = dailyAttendanceForm.getTrainingStartTimeHour();
+				Integer startMinute = dailyAttendanceForm.getTrainingStartTimeMinute();
+				Integer endHour = dailyAttendanceForm.getTrainingEndTimeHour();
+				Integer endMinute = dailyAttendanceForm.getTrainingEndTimeMinute();
+				
+				boolean startEmpty = startHour == null && startMinute == null;
+				
+				boolean endInput = endHour != null || endMinute != null;
+				
+				if (startEmpty && endInput) {
+					result.rejectValue(
+							"attendanceList[" + i + "].trainingStartTime", 
+							"attendance.punchInEmpty",
+							null, "出勤情報がないため退勤情報を入力出来ません。");
+					
+				}
+				
+				if ((startHour == null) != (startMinute == null)) {
+					
+					result.rejectValue(
+							"attendanceList[" + i + "].trainingStartTimeHour",
+							"input.invalid", 
+							new Object[] {"出勤時間"},
+							"出勤時間が正しく入力されていません"); //ここnullでもできる、あくまでチェックの代用
+				}
+				
+				if ((endHour == null) != (endMinute == null)) {
+					
+					result.rejectValue(
+							"attendanceList[" + i + "].trainingEndTimeHour",
+							"input.invalid", 
+							new Object[] {"退勤時間"},
+							"退勤時間が正しく入力されていません");
+				}
+				
+			}
+			
+		}
+		
+		if (result.hasErrors()) {
 				attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
 				attendanceForm.setAttendanceHour(attendanceUtil.getHourMap());
 				attendanceForm.setAttendanceMinute(attendanceUtil.getMinuteMap());

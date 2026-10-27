@@ -17,14 +17,40 @@
 			<h2><small>途中退校日：${dispLeaveDate}</small></h2>
 		</th:block>
 	</th:block>
-	
-<!--	<input type="text" th:field="*{}"-->
-<!--		th:error-->
 
 	<div class="row">
 		<div class="bs-component col-sm-12">
 
 			<form th:action="@{/attendance/update}" method="post">
+				
+				<!-- 備考の入力チェックエラー -->
+				<th:block th:each="dailyAttendanceForm, stat : *{attendanceForm.attendanceList}">
+					<div class="text-danger"
+						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].note')}"
+						th:text="|* #{maxlength('備考', 100)}|"
+						style="font-weight: bold;">
+					</div>
+					
+					<div class="text-danger"
+						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeHour')}"
+						th:text="|*#{input.invalid('出勤時間')}|"
+						style="font-weight: bold;">
+					</div>
+					
+					<div class="text-danger"
+						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTimeHour')}"
+						th:text="|*#{input.invalid('退勤時間')}|"
+						style="font-weight: bold;">
+					</div>
+					
+					<div class="text-danger"
+						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTime')}"
+						th:text="|*#{attendance.punchInEmpty}|"
+						style="font-weight: bold;">
+    </div>
+					
+				</th:block>
+				
 				<table class="table table-hover dataTable no-footer">
 					<thead>
 						<tr>
@@ -52,27 +78,42 @@
 								<td class="w140">[[${dailyAttendanceForm.dispTrainingDate}]]</td>
 								<td class="w300">[[${dailyAttendanceForm.sectionName}]]</td>
 								<td class="w80">
-									<select th:name="|attendanceList[${stat.index}].trainingStartTimeHour|" class="form-control">
+									<select th:name="|attendanceList[${stat.index}].trainingStartTimeHour|" class="form-control" 
+										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTime')
+    or (#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeHour')
+    and dailyAttendanceForm.trainingStartTimeHour == null)}
+    ? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
 										<option th:each="trainingStartTimeHour : ${attendanceForm.attendanceHour}" th:value="${trainingStartTimeHour.key}" class="form-control"
 										th:selected="${trainingStartTimeHour.key == dailyAttendanceForm.trainingStartTimeHour}">[[${trainingStartTimeHour.value}]]</option>
 									</select>
 								</td>
 								<td>:</td>
 								<td class="w80">
-									<select th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|" class="form-control">
+									<select th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|" class="form-control" 
+										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTime')
+    or (#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeHour')
+    and dailyAttendanceForm.trainingStartTimeMinute == null)}
+    ? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
 										<option th:each="trainingStartTimeMinute : ${attendanceForm.attendanceMinute}" th:value="${trainingStartTimeMinute.key}" class="form-control"
 										th:selected="${trainingStartTimeMinute.key == dailyAttendanceForm.trainingStartTimeMinute}">[[${trainingStartTimeMinute.value}]]</option>
 									</select>
 								</td>
 								<td class="w80">
-									<select th:name="|attendanceList[${stat.index}].trainingEndTimeHour|" class="form-control">
+									<select th:name="|attendanceList[${stat.index}].trainingEndTimeHour|"
+									class="form-control"
+									th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTimeHour')
+									and dailyAttendanceForm.trainingEndTimeHour == null}
+									? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
 										<option th:each="trainingEndTimeHour : ${attendanceForm.attendanceHour}" th:value="${trainingEndTimeHour.key}" class="form-control"
 										th:selected="${trainingEndTimeHour.key == dailyAttendanceForm.trainingEndTimeHour}">[[${trainingEndTimeHour.value}]]</option>
 									</select>
 								</td>
 								<td>:</td>
 								<td class="w80">
-									<select th:name="|attendanceList[${stat.index}].trainingEndTimeMinute|" class="form-control">
+									<select th:name="|attendanceList[${stat.index}].trainingEndTimeMinute|" class="form-control"
+										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTimeHour')
+											and dailyAttendanceForm.trainingEndTimeMinute == null}
+											? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
 										<option th:each="trainingEndTimeMinute : ${attendanceForm.attendanceMinute}" th:value="${trainingEndTimeMinute.key}" class="form-control"
 										th:selected="${trainingEndTimeMinute.key == dailyAttendanceForm.trainingEndTimeMinute}">[[${trainingEndTimeMinute.value}]]</option>
 									</select>
@@ -86,7 +127,8 @@
 								</td>
 								<td class="w70">[[${dailyAttendanceForm.statusDispName}]]</td>
 								<td class="w240">
-									<input type="text" th:name="|attendanceList[${stat.index}].note|" th:value="${dailyAttendanceForm.note}" class="form-control"></input>
+									<input type="text" th:name="|attendanceList[${stat.index}].note|" th:value="${dailyAttendanceForm.note}" class="form-control" 
+									th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].note')} ? 'border: 2px solid red; background-color: #ffe6e6;' : ''"></input>
 								</td>
 							</tr>
 						</th:block>
