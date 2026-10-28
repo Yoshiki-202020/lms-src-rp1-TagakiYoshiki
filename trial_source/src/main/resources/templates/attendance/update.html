@@ -96,7 +96,7 @@
 								<td class="w80">
 								<!--田垣 Task.27 出勤時間（時）のエラー発生時の赤枠表示 -->	
 									<!--勤怠のstat.index番目にある出勤時間（時）の入力欄を指定 -->
-									<!--th:styleにてServiceで登録したエラーを検知したら枠線、背景色を赤色にする -->
+									<!--th:styleにてServiceで登録したエラーを検知したら枠線、背景色を赤色へ変える -->
 									<select th:name="|attendanceList[${stat.index}].trainingStartTimeHour|" class="form-control" 
 										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeHour')}
 												? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
