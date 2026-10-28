@@ -25,29 +25,45 @@
 				
 				<!-- 備考の入力チェックエラー -->
 				<th:block th:each="dailyAttendanceForm, stat : *{attendanceForm.attendanceList}">
+					<!-- 備考欄100文字以上エラー -->
 					<div class="text-danger"
 						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].note')}"
 						th:text="|* #{maxlength('備考', 100)}|"
 						style="font-weight: bold;">
 					</div>
-					
+					<!-- 出勤時間の時または分片方だけ登録エラー -->	
 					<div class="text-danger"
-						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeHour')}"
-						th:text="|*#{input.invalid('出勤時間')}|"
-						style="font-weight: bold;">
+						th:if="${(dailyAttendanceForm.trainingStartTimeHour == null)
+								!= (dailyAttendanceForm.trainingStartTimeMinute == null)}"
+								th:text="|*#{input.invalid('出勤時間')}|"
+								style="font-weight: bold;">
 					</div>
-					
+					<!-- 退勤時間の時または分片方だけ登録エラー -->
 					<div class="text-danger"
-						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTimeHour')}"
-						th:text="|*#{input.invalid('退勤時間')}|"
-						style="font-weight: bold;">
+						th:if="${(dailyAttendanceForm.trainingEndTimeHour == null)
+								!= (dailyAttendanceForm.trainingEndTimeMinute == null)}"
+								th:text="|*#{input.invalid('退勤時間')}|"
+								style="font-weight: bold;">
 					</div>
-					
+					<!-- 出勤時間未登録、退勤時間登録エラー -->
 					<div class="text-danger"
 						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTime')}"
 						th:text="|*#{attendance.punchInEmpty}|"
 						style="font-weight: bold;">
-    </div>
+					</div>
+					
+					<!-- 出勤時間 > 退勤時間のエラー -->
+					<div class="text-danger"
+						th:each="err : ${#fields.errors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTime')}"
+						th:text="|*${err}|"
+						style="font-weight: bold;">
+					</div>
+					<!-- 中抜け時間が勤務時間を超えるエラー -->
+					<div class="text-danger"
+						th:if="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].blankTime')}"
+						th:text="|*#{attendance.blankTimeError}|"
+						style="font-weight: bold;">
+					</div>
 					
 				</th:block>
 				
@@ -78,49 +94,52 @@
 								<td class="w140">[[${dailyAttendanceForm.dispTrainingDate}]]</td>
 								<td class="w300">[[${dailyAttendanceForm.sectionName}]]</td>
 								<td class="w80">
+								<!--田垣 Task.27 出勤時間（時）のエラー発生時の赤枠表示 -->	
+									<!--勤怠のstat.index番目にある出勤時間（時）の入力欄を指定 -->
+									<!--th:styleにてServiceで登録したエラーを検知したら枠線、背景色を赤色にする -->
 									<select th:name="|attendanceList[${stat.index}].trainingStartTimeHour|" class="form-control" 
-										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTime')
-    or (#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeHour')
-    and dailyAttendanceForm.trainingStartTimeHour == null)}
-    ? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
+										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeHour')}
+												? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
+									<!--出勤時間の選択肢を取得、選択肢のキーと現在の勤怠データの出勤時間を比較、一致した選択肢を選択状態にしている -->
 										<option th:each="trainingStartTimeHour : ${attendanceForm.attendanceHour}" th:value="${trainingStartTimeHour.key}" class="form-control"
 										th:selected="${trainingStartTimeHour.key == dailyAttendanceForm.trainingStartTimeHour}">[[${trainingStartTimeHour.value}]]</option>
 									</select>
 								</td>
 								<td>:</td>
 								<td class="w80">
+								<!--田垣 Task.27 出勤時間（分）のエラー発生時の赤枠表示 -->	
 									<select th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|" class="form-control" 
-										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTime')
-    or (#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeHour')
-    and dailyAttendanceForm.trainingStartTimeMinute == null)}
-    ? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
+										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingStartTimeMinute')}
+												? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
 										<option th:each="trainingStartTimeMinute : ${attendanceForm.attendanceMinute}" th:value="${trainingStartTimeMinute.key}" class="form-control"
 										th:selected="${trainingStartTimeMinute.key == dailyAttendanceForm.trainingStartTimeMinute}">[[${trainingStartTimeMinute.value}]]</option>
 									</select>
 								</td>
 								<td class="w80">
+								<!--田垣 Task.27 退勤時間（時）のエラー発生時の赤枠表示 -->
 									<select th:name="|attendanceList[${stat.index}].trainingEndTimeHour|"
 									class="form-control"
-									th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTimeHour')
-									and dailyAttendanceForm.trainingEndTimeHour == null}
-									? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
+									th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTimeHour')}
+												? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
 										<option th:each="trainingEndTimeHour : ${attendanceForm.attendanceHour}" th:value="${trainingEndTimeHour.key}" class="form-control"
 										th:selected="${trainingEndTimeHour.key == dailyAttendanceForm.trainingEndTimeHour}">[[${trainingEndTimeHour.value}]]</option>
 									</select>
 								</td>
 								<td>:</td>
 								<td class="w80">
+								<!--田垣 Task.27 退勤時間（分）のエラー発生時の赤枠表示 -->
 									<select th:name="|attendanceList[${stat.index}].trainingEndTimeMinute|" class="form-control"
-										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTimeHour')
-											and dailyAttendanceForm.trainingEndTimeMinute == null}
-											? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
+										th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].trainingEndTimeMinute')}
+												? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
 										<option th:each="trainingEndTimeMinute : ${attendanceForm.attendanceMinute}" th:value="${trainingEndTimeMinute.key}" class="form-control"
 										th:selected="${trainingEndTimeMinute.key == dailyAttendanceForm.trainingEndTimeMinute}">[[${trainingEndTimeMinute.value}]]</option>
 									</select>
 								</td>
 								<!--Task.26はここまで-->
 								<td class="w120">
-									<select th:name="|attendanceList[${stat.index}].blankTime|" class="form-control">
+								<!--田垣 Task.27 中抜け時間ののエラー発生時の赤枠表示 -->
+									<select th:name="|attendanceList[${stat.index}].blankTime|" class="form-control"
+									th:style="${#fields.hasErrors('attendanceForm.attendanceList[' + stat.index + '].blankTime')} ? 'border: 2px solid red; background-color: #ffe6e6;' : ''">
 										<option th:each="blankTime : ${attendanceForm.blankTimes}" th:value="${blankTime.key}" th:inlne="text" class="form-control" 
 											th:selected="${blankTime.key == dailyAttendanceForm.blankTime}">[[${blankTime.value}]]</option>
 									</select>

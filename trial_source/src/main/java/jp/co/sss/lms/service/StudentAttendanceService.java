@@ -361,7 +361,9 @@ public class StudentAttendanceService {
 		
 		List<DailyAttendanceForm> attendanceList = attendanceForm.getAttendanceList();
 		
+		//attendanceListから空欄またはNULLの場合に入力チェックが始まる
 		if (attendanceList != null) {
+			//表示されている日付分までカウントする
 			for (int i = 0; i < attendanceList.size(); i++) {
 				DailyAttendanceForm dailyAttendanceForm = attendanceList.get(i);
 				
@@ -369,41 +371,112 @@ public class StudentAttendanceService {
 				Integer startMinute = dailyAttendanceForm.getTrainingStartTimeMinute();
 				Integer endHour = dailyAttendanceForm.getTrainingEndTimeHour();
 				Integer endMinute = dailyAttendanceForm.getTrainingEndTimeMinute();
+				Integer blankTime = dailyAttendanceForm.getBlankTime();
 				
+				//出勤時間の時、分がともにnull（未入力）の場合trueと返す
 				boolean startEmpty = startHour == null && startMinute == null;
 				
+				//退勤時間の時、分がともにnull（未入力）の場合trueと返す
 				boolean endInput = endHour != null || endMinute != null;
 				
+				//punchInEmpty（出勤情報が空欄）
 				if (startEmpty && endInput) {
+					//rejectValueにて間違い(if文の条件に合う値）を指摘
 					result.rejectValue(
+							//ここでi番目の出勤時間を指定
 							"attendanceList[" + i + "].trainingStartTime", 
+							//出力するエラー種類
 							"attendance.punchInEmpty",
-							null, "出勤情報がないため退勤情報を入力出来ません。");
-					
-				}
-				
-				if ((startHour == null) != (startMinute == null)) {
-					
+							//messageUtilよりpunchInEmptyにあるメッセージを出力
+							messageUtil.getMessage(Constants.VALID_KEY_ATTENDANCE_PUNCHINEMPTY));
+					//出勤時間の時、分を赤枠にする
 					result.rejectValue(
 							"attendanceList[" + i + "].trainingStartTimeHour",
-							"input.invalid", 
-							new Object[] {"出勤時間"},
-							"出勤時間が正しく入力されていません"); //ここnullでもできる、あくまでチェックの代用
+							"attendance.punchInEmpty");
+					result.rejectValue(
+							"attendanceList[" + i + "].trainingStartTimeMinute", 
+							"attendance.punchInEmpty");
+					
 				}
 				
-				if ((endHour == null) != (endMinute == null)) {
+				
+				//input.invalid（出勤時間の不適正）
+				if ((startHour == null) != (startMinute == null)) {
+					//? を使用して出勤時間の時、分のどちらが間違いか（空欄またはNULL）を確認
+					String field = startHour == null
+					? "traniningStartTimeHour" : "trainingStartTimeMinute";
 					
 					result.rejectValue(
-							"attendanceList[" + i + "].trainingEndTimeHour",
+							"attendanceList[" + i + "]." + field,
 							"input.invalid", 
-							new Object[] {"退勤時間"},
-							"退勤時間が正しく入力されていません");
+							//input.invalidにある{0}にnew Stringにて埋める文字を指定している
+							messageUtil.getMessage(Constants.INPUT_INVALID, new String[] {"出勤時間"}));
+				}
+				
+				//input.invalid（退勤時間の不適正）
+				if ((endHour == null) != (endMinute == null)) {
+					String field = endHour == null
+							? "trainingEndTimeHour" : "trainingEndTimeMinute";
+					
+					result.rejectValue(
+							"attendanceList[" + i + "]." + field,
+							"input.invalid", 
+							messageUtil.getMessage(Constants.INPUT_INVALID, new String[] {"退勤時間"}));
+				}
+				
+				//attendance.trainingTimeRange（退勤時間 < 出勤時間）
+				if (startHour != null && startMinute != null && endHour != null && endMinute != null) {
+					
+					String startTime = String.format("%02d:%02d", startHour, startMinute);
+					String endTime = String.format("%02d:%02d", endHour, endMinute);
+					
+					//compareToより出勤時間と退勤時間を比較
+					//条件では出勤時間-退勤時間よりプラスとなる場合となる
+					if (startTime.compareTo(endTime) > 0) {
+						
+						//メッセージ表示、時、分を赤文字にするため3つrejectValue使用
+						result.rejectValue(
+								"attendanceList[" + i + "].trainingEndTime",
+								"attendance.trainingTimeRange",
+								//エラーが起きたのが何番目か
+								new Object[] {i},
+								//valueOfより数字を文字に変える
+								messageUtil.getMessage(Constants.VALID_KEY_ATTENDANCE_TRAININGTIMERANGE,
+										new String[]{String.valueOf(i)})
+								);
+						
+						result.rejectValue(
+								"attendanceList[" + i + "].trainingEndTimeHour",
+								"attendance.trainingTimeRange");
+						result.rejectValue(
+								"attendanceList[" + i + "].trainingEndTimeMinute",
+								"attendance.trainingTimeRange");
+					}
+					
+				}
+				
+				//attendance.blankTimeError（中抜け時間が勤務時間を超える）
+				if (startHour != null && startMinute != null && endHour != null && endMinute != null && blankTime != null) {
+				
+				int startTotalMinute = startHour*60 + startMinute;
+				int endTotalMinute = endHour*60 + startMinute;
+				int workingMinute = endTotalMinute - startTotalMinute;
+				
+				if (workingMinute >= 0 && blankTime > workingMinute) {
+					result.rejectValue(
+							"attendanceList[" + i + "].blankTime",
+							"attendance.blankTimeError",
+							//attendance.blankTimeErrorに{0}など代入するものはないためnullとしている
+							//Constantsにより定数を使ってメッセージを指定
+							null, messageUtil.getMessage(Constants.VALID_KEY_ATTENDANCE_BLANKTIMEERROR)
+							);
+					}
 				}
 				
 			}
 			
 		}
-		
+		//maxlengthは以下のみ
 		if (result.hasErrors()) {
 				attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
 				attendanceForm.setAttendanceHour(attendanceUtil.getHourMap());

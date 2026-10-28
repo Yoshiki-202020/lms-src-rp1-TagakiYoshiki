@@ -151,6 +151,7 @@ public class AttendanceController {
 		//田垣貴生 - Task.27エラーチェック
 		studentAttendanceService.updateInputCheck(attendanceForm, result);
 		
+		//resultの結果がエラーの場合はupdate.htmlへ返す
 		if(result.hasErrors()) {
 			return "attendance/update";
 		}

@@ -34,7 +34,6 @@ public class DailyAttendanceForm {
 	/** 退勤時間 分（画面表示用）*/
 	private Integer trainingEndTimeMinute;
 	/** 中抜け時間 */
-//	@Max (value <= trainingEndTime - trainingStartTime, message = "")
 	private Integer blankTime;
 	/** 中抜け時間（画面表示用） */
 	private String blankTimeValue;
@@ -42,6 +41,7 @@ public class DailyAttendanceForm {
 	private String status;
 	/** 備考 */
 	//田垣貴生 - Task.27
+	//文字数が100文字以上の場合にチェックエラー発生
 	@Size(max = 100, message = "{maxlength}")
 	private String note;
 	/** セクション名 */
